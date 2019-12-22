@@ -1,15 +1,15 @@
-import React from 'react';
+import React from "react";
 
-import User from './components/user/user.component';
-import Post from './components/post/post.component';
+import User from "./components/user/user.component";
+import Post from "./components/post/post.component";
 
-import './App.css';
+import "./App.css";
+import UseEffectExample from "./components/use-effect-example/use-effect-example.component";
 
 const App = props => {
   return (
-    <div className='App'>
-      <User userId={5} />
-      <Post postId={15} />
+    <div className="App">
+      <UseEffectExample />
     </div>
   );
 };

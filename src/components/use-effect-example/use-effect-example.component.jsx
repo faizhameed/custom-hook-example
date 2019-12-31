@@ -1,51 +1,68 @@
 import React, { useState, useEffect } from "react";
-
+import "./use-effect.styles.css";
 import Card from "../card/card.component";
 
 const UseEffectExample = () => {
   const [user, setUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("Bret");
-  const [counter, setCounter] = useState(0);
+  const [favourite, setFavourite] = useState([]);
+  /*  useEffect(() => {}, [favourite]); */
+  const addFavourite = item => {
+    setFavourite([...favourite, item]);
+  };
+  const removeFavourite = item => {
+    let temp = favourite.filter(post => post !== item);
+    setFavourite([...temp]);
+  };
 
-  useEffect(() => {
-    const fetchFunc = async () => {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/users?username=${searchQuery}`
-      );
-      const resJson = await response.json();
-      setUser(resJson[0]);
-      console.log("fetching runs");
-    };
-
-    fetchFunc();
-  }, [searchQuery]);
-  useEffect(() => {
-    console.log("counting:", counter);
-  }, [counter]);
-  const addCount = () => {
-    console.log("adding");
-    setCounter(counter + 1);
+  const fetchFunc = async () => {
+    const response = await fetch(
+      `http://jsonplaceholder.typicode.com/posts?_page=1&_limit=5`
+    );
+    const resJson = await response.json();
+    setUser(resJson);
+    if (user) console.log("fetching runs", user[0].name);
   };
 
   return (
-    <Card>
-      <input
-        type="search"
-        value={searchQuery}
-        onChange={event => setSearchQuery(event.target.value)}
-      />
-      {user ? (
-        <div>
-          <h3>{user.name}</h3>
-          <h3> {user.username} </h3>
-          <h3> {user.email} </h3>
+    <>
+      <div className="grid-display">
+        {user
+          ? user.map(item => {
+              return (
+                <Card key={item.id}>
+                  <div>
+                    <h3>{item.id}</h3>
+                    <h3> {item.title} </h3>
+                    <h3> {item.body} </h3>
+                  </div>
+                  <button onClick={() => addFavourite(item)}>Favourite</button>
+                </Card>
+              );
+            })
+          : null}
+      </div>
+      <button onClick={fetchFunc}>Fetch</button>
+      {
+        <div className="grid-display">
+          {favourite
+            ? favourite.map(item => {
+                return (
+                  <Card key={item.id}>
+                    <div>
+                      <h3>{item.id}</h3>
+                      <h3> {item.title} </h3>
+                      <h3> {item.body} </h3>
+                    </div>
+                    <button onClick={() => removeFavourite(item)}>
+                      Remove
+                    </button>
+                  </Card>
+                );
+              })
+            : null}
         </div>
-      ) : (
-        <p>No user found</p>
-      )}
-      <p>{counter}</p>
-      <button onClick={addCount}>count</button>
-    </Card>
+      }
+    </>
   );
 };
 
